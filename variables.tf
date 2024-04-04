@@ -39,7 +39,7 @@ variable "mssql_server_name" {
 }
 variable "mssql_server_version" {
   description = "The version for the new server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). Changing this forces a new resource to be created."
-  type        = number
+  type        = string
   default     = 12.0
 }
 variable "mssql_serveradmin_login" {
