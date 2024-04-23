@@ -2,12 +2,11 @@ provider "azurerm" {
 features {}
 }
 
-module "application_insight" {
+module "mssql_server" {
   source  = "Think-Cube/mssql-server/azure"
   version = "1.0.0"
   resource_group_name = "dev-test-weu-rg"
   resource_group_location = "West Europe"
-  application_insights_type = "web"
   environment = "dev"
   region = "weu"
   mssql_server_name = "examplemssql"
