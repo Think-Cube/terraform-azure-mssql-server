@@ -1,31 +1,27 @@
 <!-- BEGIN_TF_DOCS -->
-## Requirements
+#### Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.4 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.94.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.100.0 |
 
-## Providers
+#### Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.94.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.100.0 |
 
-## Modules
-
-No modules.
-
-## Resources
+#### Resources
 
 | Name | Type |
 |------|------|
-| [azurerm_mssql_firewall_rule.main](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/mssql_firewall_rule) | resource |
-| [azurerm_mssql_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/resources/mssql_server) | resource |
-| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/data-sources/client_config) | data source |
-| [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/3.94.0/docs/data-sources/resource_group) | data source |
+| [azurerm_mssql_firewall_rule.main](https://registry.terraform.io/providers/hashicorp/azurerm/3.100.0/docs/resources/mssql_firewall_rule) | resource |
+| [azurerm_mssql_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/3.100.0/docs/resources/mssql_server) | resource |
+| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.100.0/docs/data-sources/client_config) | data source |
+| [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/3.100.0/docs/data-sources/resource_group) | data source |
 
-## Inputs
+#### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -46,7 +42,7 @@ No modules.
 | <a name="input_resource_group_location"></a> [resource\_group\_location](#input\_resource\_group\_location) | Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | `"West Europe"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group in which to create the Microsoft SQL Server. Changing this forces a new resource to be created. | `string` | n/a | yes |
 
-## Outputs
+#### Outputs
 
 | Name | Description |
 |------|-------------|
