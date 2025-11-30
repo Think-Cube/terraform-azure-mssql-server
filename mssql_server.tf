@@ -18,12 +18,29 @@ resource "azurerm_mssql_server" "main" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type = var.mssql_server_identity_type
   }
 
-  azuread_administrator {
-    login_username = var.mssql_server_azure_ad_admin_login
-    object_id      = var.mssql_server_azure_ad_admin_object_id
-    tenant_id      = var.mssql_server_azure_tenant_id
+  dynamic "azuread_administrator" {
+    for_each = var.mssql_server_azure_ad_admin_login != "" && var.mssql_server_azure_ad_admin_object_id != "" && var.mssql_server_azure_tenant_id != "" ? [1] : []
+    content {
+      login_username = var.mssql_server_azure_ad_admin_login
+      object_id      = var.mssql_server_azure_ad_admin_object_id
+      tenant_id      = var.mssql_server_azure_tenant_id
+    }
+  }
+
+  dynamic "key_vault_key" {
+    for_each = var.mssql_server_key_vault_key_id != null ? [1] : []
+    content {
+      key_vault_key_id = var.mssql_server_key_vault_key_id
+    }
+  }
+
+  dynamic "auditing_policy" {
+    for_each = var.mssql_server_auditing_policy != null ? [1] : []
+    content {
+      policy = var.mssql_server_auditing_policy
+    }
   }
 }

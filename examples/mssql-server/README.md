@@ -1,3 +1,16 @@
+# Example: Deploy Azure SQL Server with Terraform Module
+
+This example demonstrates how to deploy a Microsoft Azure SQL Server using the `Think-Cube/mssql-server/azure` Terraform module.
+
+## Prerequisites
+
+- Terraform >= 1.5.0
+- AzureRM Provider >= 3.0
+- Existing Azure Resource Group
+
+## Usage
+
+```hcl
 provider "azurerm" {
   features {}
 }
@@ -31,3 +44,5 @@ module "mssql_server" {
     ManagedByTerraform = "True"
   }
 }
+
+```
