@@ -37,10 +37,4 @@ resource "azurerm_mssql_server" "main" {
     }
   }
 
-  dynamic "auditing_policy" {
-    for_each = var.mssql_server_auditing_policy != null ? [1] : []
-    content {
-      policy = var.mssql_server_auditing_policy
-    }
-  }
 }

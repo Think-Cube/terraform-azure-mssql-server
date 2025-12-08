@@ -101,9 +101,3 @@ variable "mssql_server_key_vault_key_id" {
   type        = string
   default     = null
 }
-
-variable "mssql_server_auditing_policy" {
-  description = "Optional auditing policy block. Follow AzureRM documentation structure."
-  type        = any
-  default     = null
-}
