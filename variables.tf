@@ -26,7 +26,7 @@ variable "resource_group_name" {
 variable "resource_group_location" {
   description = "Location of the Resource Group. Changing this will force a new resource creation."
   type        = string
-  default     = "West Europe"
+  default     = "westeurope"
 }
 
 variable "mssql_server_name" {
@@ -72,16 +72,19 @@ variable "mssql_server_connection_policy" {
 variable "mssql_server_azure_ad_admin_login" {
   description = "Login username for the Azure AD Administrator of the SQL Server."
   type        = string
+  default     = ""
 }
 
 variable "mssql_server_azure_ad_admin_object_id" {
   description = "Object ID of the Azure AD Administrator."
   type        = string
+  default     = ""
 }
 
 variable "mssql_server_azure_tenant_id" {
   description = "Azure Tenant ID of the Azure AD Administrator."
   type        = string
+  default     = ""
 }
 
 variable "mssql_server_ip_rules" {
@@ -97,7 +100,19 @@ variable "mssql_server_identity_type" {
 }
 
 variable "mssql_server_key_vault_key_id" {
-  description = "Optional Key Vault key ID for TDE encryption. If not set, TDE uses service-managed keys."
+  description = "Optional Key Vault key ID for TDE encryption (Customer Managed Key). If not set, TDE uses service-managed keys."
   type        = string
+  default     = null
+}
+
+variable "mssql_server_auditing_policy" {
+  description = <<EOT
+Optional auditing policy for the SQL Server. Use a map with keys:
+- storage_endpoint (string)
+- storage_account_access_key (string)
+- retention_in_days (number)
+- log_analytics_workspace_id (optional string)
+EOT
+  type        = any
   default     = null
 }

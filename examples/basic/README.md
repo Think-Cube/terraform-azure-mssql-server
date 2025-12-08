@@ -1,50 +1,26 @@
-# Terraform Azure SQL Server Module – Basic Example
+# Terraform Module: Azure MSSQL Server
 
-This example demonstrates a **basic Azure SQL Server deployment**.
-
-## Description
-
-- Public network access enabled
-- Simple firewall rules (IP/CIDR)
-- System-assigned managed identity enabled
-- No Azure AD admin configured
-- No Key Vault TDE encryption
-- Suitable for development or test environments
+This Terraform module deploys an **Azure SQL Server** with optional features for **TDE (Transparent Data Encryption)** and **Auditing**.
 
 ## Features
 
-- Easy deployment of SQL Server
-- Supports IP-based firewall rules
-- Configurable TLS version
-- Tagged resources for governance
+- Create SQL Server with system-assigned identity
+- Configure Azure AD Administrator
+- Optional firewall rules (IP addresses or CIDR ranges)
+- Optional Transparent Data Encryption (Customer Managed Key via Key Vault)
+- Optional Auditing to Azure Storage and Log Analytics
+
+## Usage Examples
+
+### Basic Usage
 
 ```yml
-module "mssql_server_basic" {
-  source                                     = "./terraform-azure-mssql-server"
-  environment                                = "dev"
-  region                                     = "westeurope"
-  resource_group_name                        = "rg-dev"
-  resource_group_location                    = "westeurope"
-  mssql_server_name                          = "appdb"
-  mssql_server_version                       = "12.0"
-  mssql_server_admin_login                   = "sqladminuser"
-  mssql_server_admin_password                = "StrongP@ssw0rd!"
-  mssql_server_minimum_tls_version           = "1.2"
-  mssql_server_connection_policy             = "Default"
-  mssql_server_public_network_access_enabled = true
-  mssql_server_identity_type                 = "SystemAssigned"
-  mssql_server_azure_ad_admin_login          = ""
-  mssql_server_azure_ad_admin_object_id      = ""
-  mssql_server_azure_tenant_id               = ""
-  mssql_server_key_vault_key_id              = null
-  mssql_server_ip_rules = {
-    "office"    = "192.168.1.15"
-    "vpn-range" = "10.0.0.0/24"
-  }
-
-  default_tags = {
-    environment = "dev"
-    project     = "example"
-  }
+module "mssql_basic" {
+  source = "./modules/mssql-server"
+  environment = "dev"
+  resource_group_name = "rg-dev"
+  mssql_server_name = "demo-sql"
+  mssql_server_admin_login = "sqladmin"
+  mssql_server_admin_password = "StrongP@ssw0rd123!"
 }
 ```

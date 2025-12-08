@@ -29,12 +29,20 @@ resource "azurerm_mssql_server" "main" {
       tenant_id      = var.mssql_server_azure_tenant_id
     }
   }
+}
 
-  dynamic "key_vault_key" {
-    for_each = var.mssql_server_key_vault_key_id != null ? [1] : []
-    content {
-      key_vault_key_id = var.mssql_server_key_vault_key_id
-    }
-  }
+resource "azurerm_mssql_server_transparent_data_encryption" "tde" {
+  count            = var.mssql_server_key_vault_key_id != null ? 1 : 0
+  server_id        = azurerm_mssql_server.main.id
+  key_vault_key_id = var.mssql_server_key_vault_key_id
+}
 
+resource "azurerm_mssql_server_auditing" "audit" {
+  count                      = var.mssql_server_auditing_policy != null ? 1 : 0
+  server_id                  = azurerm_mssql_server.main.id
+  storage_endpoint           = var.mssql_server_auditing_policy.storage_endpoint
+  storage_account_access_key = var.mssql_server_auditing_policy.storage_account_access_key
+  retention_in_days          = var.mssql_server_auditing_policy.retention_in_days
+  state                      = "Enabled"
+  log_analytics_workspace_id = lookup(var.mssql_server_auditing_policy, "log_analytics_workspace_id", null)
 }
