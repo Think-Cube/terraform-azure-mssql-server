@@ -1,84 +1,117 @@
-###########################
-# Common vars
-###########################
 variable "environment" {
-  description = "Variable that defines the name of the environment."
+  description = "Environment in which this resource is deployed (e.g., dev, test, prod)."
   type        = string
   default     = "dev"
 }
+
 variable "default_tags" {
-  description = "A mapping of tags to assign to the resource."
+  description = "Map of default tags to assign to all resources. Tags help organize and identify resources in Azure."
   type        = map(any)
   default = {
     "ManagedByTerraform" = "True"
   }
 }
+
 variable "region" {
-  description = "Region in which resources are deployed."
+  description = "Azure region where resources will be deployed."
   type        = string
-  default     = "weu"
+  default     = "westeurope"
 }
-###########################
-# Resource groups vars
-###########################
-variable "resource_group_location" {
-  description = "Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
-  default     = "West Europe"
-  type        = string
-}
+
 variable "resource_group_name" {
-  description = "The name of the resource group in which to create the Microsoft SQL Server. Changing this forces a new resource to be created."
+  description = "Name of the existing Azure Resource Group to deploy the SQL Server into."
   type        = string
 }
-###########################
-# MSSQL Server vars
-###########################
+
+variable "resource_group_location" {
+  description = "Location of the Resource Group. Changing this will force a new resource creation."
+  type        = string
+  default     = "westeurope"
+}
+
 variable "mssql_server_name" {
-  description = "The name of the Microsoft SQL Server. This needs to be globally unique within Azure. Changing this forces a new resource to be created."
+  description = "Base name for the Microsoft SQL Server. Must be globally unique."
   type        = string
 }
+
 variable "mssql_server_version" {
-  description = "The version for the new server. Valid values are: 2.0 (for v11 server) and 12.0 (for v12 server). Changing this forces a new resource to be created."
+  description = "SQL Server version. Valid values: 2.0 (v11) and 12.0 (v12)."
   type        = string
-  default     = 12.0
+  default     = "12.0"
 }
+
 variable "mssql_server_admin_login" {
-  description = "The administrator login name for the new server. Required unless azuread_authentication_only in the azuread_administrator block is true. When omitted, Azure will generate a default username which cannot be subsequently changed. Changing this forces a new resource to be created."
+  description = "Administrator login for the SQL Server. Required unless Azure AD only authentication is used."
   type        = string
 }
+
 variable "mssql_server_admin_password" {
-  description = "The password associated with the administrator_login user. Needs to comply with Azure's Password Policy. Required unless azuread_authentication_only in the azuread_administrator block is true."
+  description = "Password for the SQL Server administrator. Must meet Azure Password Policy."
   type        = string
+  sensitive   = true
 }
+
 variable "mssql_server_minimum_tls_version" {
-  description = "The Minimum TLS Version for all SQL Database and SQL Data Warehouse databases associated with the server. Valid values are: 1.0, 1.1 , 1.2 and Disabled. Defaults to 1.2."
+  description = "Minimum TLS version enforced for SQL connections. Valid values: 1.0, 1.1, 1.2, Disabled."
   type        = string
   default     = "1.2"
 }
+
 variable "mssql_server_public_network_access_enabled" {
-  description = "Whether public network access is allowed for this server. Defaults to true."
+  description = "Enable or disable public network access to the SQL Server."
   type        = bool
   default     = true
 }
+
 variable "mssql_server_connection_policy" {
-  description = "The connection policy the server will use. Possible values are Default, Proxy, and Redirect. Defaults to Default."
+  description = "Connection policy for the SQL Server. Valid values: Default, Proxy, Redirect."
   type        = string
   default     = "Default"
 }
+
 variable "mssql_server_azure_ad_admin_login" {
-  description = "The login username of the Azure AD Administrator of this SQL Server."
+  description = "Login username for the Azure AD Administrator of the SQL Server."
   type        = string
+  default     = ""
 }
+
 variable "mssql_server_azure_ad_admin_object_id" {
-  description = "The object id of the Azure AD Administrator of this SQL Server."
+  description = "Object ID of the Azure AD Administrator."
   type        = string
+  default     = ""
 }
+
 variable "mssql_server_azure_tenant_id" {
-  description = "The tenant id of the Azure AD Administrator of this SQL Server."
+  description = "Azure Tenant ID of the Azure AD Administrator."
   type        = string
+  default     = ""
 }
+
 variable "mssql_server_ip_rules" {
+  description = "Map of allowed IP addresses or CIDRs for firewall rules. Key = name, value = IP/CIDR."
   type        = map(string)
-  description = "Map of IP addresses permitted for access to DB"
   default     = {}
+}
+
+variable "mssql_server_identity_type" {
+  description = "Type of identity for the SQL Server. Options: None, SystemAssigned."
+  type        = string
+  default     = "SystemAssigned"
+}
+
+variable "mssql_server_key_vault_key_id" {
+  description = "Optional Key Vault key ID for TDE encryption (Customer Managed Key). If not set, TDE uses service-managed keys."
+  type        = string
+  default     = null
+}
+
+variable "mssql_server_extended_auditing" {
+  description = <<EOT
+Optional extended auditing policy for SQL Server. Provide as a map:
+- storage_endpoint (string, required)
+- storage_account_access_key (string, required)
+- retention_in_days (number, optional, default 90)
+EOT
+  type        = any
+  default     = null
 }
