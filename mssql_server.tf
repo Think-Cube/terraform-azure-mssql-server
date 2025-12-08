@@ -37,12 +37,12 @@ resource "azurerm_mssql_server_transparent_data_encryption" "tde" {
   key_vault_key_id = var.mssql_server_key_vault_key_id
 }
 
-resource "azurerm_mssql_server_auditing" "audit" {
-  count                      = var.mssql_server_auditing_policy != null ? 1 : 0
-  server_id                  = azurerm_mssql_server.main.id
-  storage_endpoint           = var.mssql_server_auditing_policy.storage_endpoint
-  storage_account_access_key = var.mssql_server_auditing_policy.storage_account_access_key
-  retention_in_days          = var.mssql_server_auditing_policy.retention_in_days
-  state                      = "Enabled"
-  log_analytics_workspace_id = lookup(var.mssql_server_auditing_policy, "log_analytics_workspace_id", null)
+resource "azurerm_mssql_server_extended_auditing_policy" "main" {
+  count = var.mssql_server_extended_auditing != null ? 1 : 0
+
+  server_id                               = azurerm_mssql_server.main.id
+  storage_endpoint                        = var.mssql_server_extended_auditing.storage_endpoint
+  storage_account_access_key              = var.mssql_server_extended_auditing.storage_account_access_key
+  storage_account_access_key_is_secondary = false
+  retention_in_days                       = lookup(var.mssql_server_extended_auditing, "retention_in_days", 90)
 }

@@ -105,13 +105,12 @@ variable "mssql_server_key_vault_key_id" {
   default     = null
 }
 
-variable "mssql_server_auditing_policy" {
+variable "mssql_server_extended_auditing" {
   description = <<EOT
-Optional auditing policy for the SQL Server. Use a map with keys:
-- storage_endpoint (string)
-- storage_account_access_key (string)
-- retention_in_days (number)
-- log_analytics_workspace_id (optional string)
+Optional extended auditing policy for SQL Server. Provide as a map:
+- storage_endpoint (string, required)
+- storage_account_access_key (string, required)
+- retention_in_days (number, optional, default 90)
 EOT
   type        = any
   default     = null
