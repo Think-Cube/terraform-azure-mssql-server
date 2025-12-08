@@ -6,8 +6,8 @@ resource "azurerm_mssql_server" "main" {
   version                      = var.mssql_server_version
   administrator_login          = var.mssql_server_admin_login
   administrator_login_password = var.mssql_server_admin_password
+  minimum_tls_version          = var.mssql_server_minimum_tls_version
   #tfsec:ignore:azure-database-no-public-access
-  minimum_tls_version           = var.mssql_server_minimum_tls_version
   public_network_access_enabled = var.mssql_server_public_network_access_enabled
   connection_policy             = var.mssql_server_connection_policy
   tags                          = var.default_tags
