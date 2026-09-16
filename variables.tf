@@ -1,117 +1,113 @@
-variable "environment" {
-  description = "Environment in which this resource is deployed (e.g., dev, test, prod)."
+variable "name" {
+  description = "The name of the MS SQL Server. Must be globally unique."
   type        = string
-  default     = "dev"
-}
-
-variable "default_tags" {
-  description = "Map of default tags to assign to all resources. Tags help organize and identify resources in Azure."
-  type        = map(any)
-  default = {
-    "ManagedByTerraform" = "True"
-  }
-}
-
-variable "region" {
-  description = "Azure region where resources will be deployed."
-  type        = string
-  default     = "westeurope"
 }
 
 variable "resource_group_name" {
-  description = "Name of the existing Azure Resource Group to deploy the SQL Server into."
+  description = "The name of the Resource Group where the MS SQL Server should be created."
   type        = string
 }
 
-variable "resource_group_location" {
-  description = "Location of the Resource Group. Changing this will force a new resource creation."
-  type        = string
-  default     = "westeurope"
-}
-
-variable "mssql_server_name" {
-  description = "Base name for the Microsoft SQL Server. Must be globally unique."
+variable "location" {
+  description = "The Azure Region where the MS SQL Server should be created."
   type        = string
 }
 
-variable "mssql_server_version" {
-  description = "SQL Server version. Valid values: 2.0 (v11) and 12.0 (v12)."
+variable "version" {
+  description = "The version of the MS SQL Server. Valid values: 2.0 (for v11 server) and 12.0 (for v12 server)."
   type        = string
   default     = "12.0"
 }
 
-variable "mssql_server_admin_login" {
-  description = "Administrator login for the SQL Server. Required unless Azure AD only authentication is used."
+variable "administrator_login" {
+  description = "The administrator login name for the new server. Required unless azuread_authentication_only is true in the azuread_administrator block."
   type        = string
+  default     = null
 }
 
-variable "mssql_server_admin_password" {
-  description = "Password for the SQL Server administrator. Must meet Azure Password Policy."
+variable "administrator_login_password" {
+  description = "The password associated with the administrator_login user."
   type        = string
+  default     = null
   sensitive   = true
 }
 
-variable "mssql_server_minimum_tls_version" {
-  description = "Minimum TLS version enforced for SQL connections. Valid values: 1.0, 1.1, 1.2, Disabled."
-  type        = string
-  default     = "1.2"
+variable "azuread_administrator" {
+  description = "An Azure AD Administrator block for the MS SQL Server."
+  type = object({
+    login_username              = string
+    object_id                   = string
+    tenant_id                   = optional(string)
+    azuread_authentication_only = optional(bool)
+  })
+  default = null
 }
 
-variable "mssql_server_public_network_access_enabled" {
-  description = "Enable or disable public network access to the SQL Server."
-  type        = bool
-  default     = true
-}
-
-variable "mssql_server_connection_policy" {
-  description = "Connection policy for the SQL Server. Valid values: Default, Proxy, Redirect."
+variable "connection_policy" {
+  description = "The connection policy the server will use. Possible values: Default, Proxy, Redirect."
   type        = string
   default     = "Default"
 }
 
-variable "mssql_server_azure_ad_admin_login" {
-  description = "Login username for the Azure AD Administrator of the SQL Server."
+variable "minimum_tls_version" {
+  description = "The Minimum TLS Version for all SQL Database and SQL Data Warehouse databases associated with the server. Valid value: 1.2."
   type        = string
-  default     = ""
+  default     = "1.2"
 }
 
-variable "mssql_server_azure_ad_admin_object_id" {
-  description = "Object ID of the Azure AD Administrator."
-  type        = string
-  default     = ""
+variable "public_network_access_enabled" {
+  description = "Whether public network access is allowed for this server."
+  type        = bool
+  default     = true
 }
 
-variable "mssql_server_azure_tenant_id" {
-  description = "Azure Tenant ID of the Azure AD Administrator."
-  type        = string
-  default     = ""
+variable "outbound_network_restriction_enabled" {
+  description = "Whether outbound network traffic is restricted for this server."
+  type        = bool
+  default     = false
 }
 
-variable "mssql_server_ip_rules" {
-  description = "Map of allowed IP addresses or CIDRs for firewall rules. Key = name, value = IP/CIDR."
+variable "primary_user_assigned_identity_id" {
+  description = "Specifies the primary user managed identity ID. Required if type within the identity block is set to either SystemAssigned, UserAssigned or UserAssigned."
+  type        = string
+  default     = null
+}
+
+variable "transparent_data_encryption_key_vault_key_id" {
+  description = "The fully versioned Key Vault Key URL to be used as the Customer Managed Key for Transparent Data Encryption."
+  type        = string
+  default     = null
+}
+
+variable "identity" {
+  description = "An identity block for the MS SQL Server."
+  type = object({
+    type         = string
+    identity_ids = optional(list(string))
+  })
+  default = null
+}
+
+variable "firewall_rules" {
+  description = "A map of firewall rules. Key is the rule name, value is an object with start_ip_address and end_ip_address."
+  type = map(object({
+    start_ip_address = string
+    end_ip_address   = string
+  }))
+  default = {}
+}
+
+variable "virtual_network_rules" {
+  description = "A map of virtual network rules. Key is the rule name, value is an object with subnet_id and optional ignore_missing_vnet_service_endpoint."
+  type = map(object({
+    subnet_id                            = string
+    ignore_missing_vnet_service_endpoint = optional(bool, false)
+  }))
+  default = {}
+}
+
+variable "tags" {
+  description = "A mapping of tags which should be assigned to the MS SQL Server."
   type        = map(string)
   default     = {}
-}
-
-variable "mssql_server_identity_type" {
-  description = "Type of identity for the SQL Server. Options: None, SystemAssigned."
-  type        = string
-  default     = "SystemAssigned"
-}
-
-variable "mssql_server_key_vault_key_id" {
-  description = "Optional Key Vault key ID for TDE encryption (Customer Managed Key). If not set, TDE uses service-managed keys."
-  type        = string
-  default     = null
-}
-
-variable "mssql_server_extended_auditing" {
-  description = <<EOT
-Optional extended auditing policy for SQL Server. Provide as a map:
-- storage_endpoint (string, required)
-- storage_account_access_key (string, required)
-- retention_in_days (number, optional, default 90)
-EOT
-  type        = any
-  default     = null
 }

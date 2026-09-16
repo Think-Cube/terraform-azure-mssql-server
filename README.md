@@ -62,3 +62,61 @@ No modules.
 | <a name="output_name"></a> [name](#output\_name) | The Azure SQL Server Name. |
 | <a name="output_public_network_access"></a> [public\_network\_access](#output\_public\_network\_access) | Indicates whether public network access is enabled. |
 | <a name="output_version"></a> [version](#output\_version) | SQL Server version. |
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 5.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 5.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [azurerm_mssql_firewall_rule.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_firewall_rule) | resource |
+| [azurerm_mssql_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server) | resource |
+| [azurerm_mssql_virtual_network_rule.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_virtual_network_rule) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_administrator_login"></a> [administrator\_login](#input\_administrator\_login) | The administrator login name for the new server. Required unless azuread\_authentication\_only is true in the azuread\_administrator block. | `string` | `null` | no |
+| <a name="input_administrator_login_password"></a> [administrator\_login\_password](#input\_administrator\_login\_password) | The password associated with the administrator\_login user. | `string` | `null` | no |
+| <a name="input_azuread_administrator"></a> [azuread\_administrator](#input\_azuread\_administrator) | An Azure AD Administrator block for the MS SQL Server. | <pre>object({<br>    login_username              = string<br>    object_id                   = string<br>    tenant_id                   = optional(string)<br>    azuread_authentication_only = optional(bool)<br>  })</pre> | `null` | no |
+| <a name="input_connection_policy"></a> [connection\_policy](#input\_connection\_policy) | The connection policy the server will use. Possible values: Default, Proxy, Redirect. | `string` | `"Default"` | no |
+| <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | A map of firewall rules. Key is the rule name, value is an object with start\_ip\_address and end\_ip\_address. | <pre>map(object({<br>    start_ip_address = string<br>    end_ip_address   = string<br>  }))</pre> | `{}` | no |
+| <a name="input_identity"></a> [identity](#input\_identity) | An identity block for the MS SQL Server. | <pre>object({<br>    type         = string<br>    identity_ids = optional(list(string))<br>  })</pre> | `null` | no |
+| <a name="input_location"></a> [location](#input\_location) | The Azure Region where the MS SQL Server should be created. | `string` | n/a | yes |
+| <a name="input_minimum_tls_version"></a> [minimum\_tls\_version](#input\_minimum\_tls\_version) | The Minimum TLS Version for all SQL Database and SQL Data Warehouse databases associated with the server. Valid value: 1.2. | `string` | `"1.2"` | no |
+| <a name="input_name"></a> [name](#input\_name) | The name of the MS SQL Server. Must be globally unique. | `string` | n/a | yes |
+| <a name="input_outbound_network_restriction_enabled"></a> [outbound\_network\_restriction\_enabled](#input\_outbound\_network\_restriction\_enabled) | Whether outbound network traffic is restricted for this server. | `bool` | `false` | no |
+| <a name="input_primary_user_assigned_identity_id"></a> [primary\_user\_assigned\_identity\_id](#input\_primary\_user\_assigned\_identity\_id) | Specifies the primary user managed identity ID. Required if type within the identity block is set to either SystemAssigned, UserAssigned or UserAssigned. | `string` | `null` | no |
+| <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled) | Whether public network access is allowed for this server. | `bool` | `true` | no |
+| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the Resource Group where the MS SQL Server should be created. | `string` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags which should be assigned to the MS SQL Server. | `map(string)` | `{}` | no |
+| <a name="input_transparent_data_encryption_key_vault_key_id"></a> [transparent\_data\_encryption\_key\_vault\_key\_id](#input\_transparent\_data\_encryption\_key\_vault\_key\_id) | The fully versioned Key Vault Key URL to be used as the Customer Managed Key for Transparent Data Encryption. | `string` | `null` | no |
+| <a name="input_version"></a> [version](#input\_version) | The version of the MS SQL Server. Valid values: 2.0 (for v11 server) and 12.0 (for v12 server). | `string` | `"12.0"` | no |
+| <a name="input_virtual_network_rules"></a> [virtual\_network\_rules](#input\_virtual\_network\_rules) | A map of virtual network rules. Key is the rule name, value is an object with subnet\_id and optional ignore\_missing\_vnet\_service\_endpoint. | <pre>map(object({<br>    subnet_id                            = string<br>    ignore_missing_vnet_service_endpoint = optional(bool, false)<br>  }))</pre> | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_fqdn"></a> [fqdn](#output\_fqdn) | The fully qualified domain name of the MS SQL Server. |
+| <a name="output_id"></a> [id](#output\_id) | The ID of the MS SQL Server. |
+| <a name="output_identity"></a> [identity](#output\_identity) | The identity of the MS SQL Server. |
+| <a name="output_name"></a> [name](#output\_name) | The name of the MS SQL Server. |
+<!-- END_TF_DOCS -->
