@@ -1,26 +1,55 @@
-# Terraform Module: Azure MSSQL Server
+# Example: Basic — Azure MSSQL Server
 
-This Terraform module deploys an **Azure SQL Server** with optional features for **TDE (Transparent Data Encryption)** and **Auditing**.
+Provisions an `azurerm_mssql_server` with SQL authentication, TLS 1.2 enforcement and no public network access.
 
-## Features
+```hcl
+module "mssql_server" {
+  source = "github.com/Think-Cube/terraform-azure-mssql-server?ref=v1.0.0"
 
-- Create SQL Server with system-assigned identity
-- Configure Azure AD Administrator
-- Optional firewall rules (IP addresses or CIDR ranges)
-- Optional Transparent Data Encryption (Customer Managed Key via Key Vault)
-- Optional Auditing to Azure Storage and Log Analytics
+  name                = "sql-example-dev"
+  resource_group_name = "rg-example"
+  location            = "West Europe"
 
-## Usage Examples
+  administrator_login          = "sqladmin"
+  administrator_login_password = "StrongP@ssw0rd123!"
 
-### Basic Usage
+  minimum_tls_version           = "1.2"
+  public_network_access_enabled = false
 
-```yml
-module "mssql_basic" {
-  source = "./modules/mssql-server"
-  environment = "dev"
-  resource_group_name = "rg-dev"
-  mssql_server_name = "demo-sql"
-  mssql_server_admin_login = "sqladmin"
-  mssql_server_admin_password = "StrongP@ssw0rd123!"
+  tags = {
+    environment = "dev"
+    managed_by  = "terraform"
+  }
 }
 ```
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 5.0 |
+
+## Providers
+
+No providers.
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_mssql_server"></a> [mssql\_server](#module\_mssql\_server) | github.com/Think-Cube/terraform-azure-mssql-server | v1.0.0 |
+
+## Resources
+
+No resources.
+
+## Inputs
+
+No inputs.
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->

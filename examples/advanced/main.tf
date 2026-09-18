@@ -1,25 +1,42 @@
-module "mssql_advanced" {
-  source                                     = "./terraform-azure-mssql-server"
-  environment                                = "prod"
-  region                                     = "westeurope"
-  resource_group_name                        = "rg-prod"
-  mssql_server_name                          = "prod-sql"
-  mssql_server_admin_login                   = "sqladmin"
-  mssql_server_admin_password                = "VeryStr0ngP@ss!"
-  mssql_server_identity_type                 = "SystemAssigned"
-  mssql_server_public_network_access_enabled = true
-  mssql_server_azure_ad_admin_login          = "admin@tenant.onmicrosoft.com"
-  mssql_server_azure_ad_admin_object_id      = "00000000-0000-0000-0000-000000000000"
-  mssql_server_azure_tenant_id               = "11111111-1111-1111-1111-111111111111"
-  mssql_server_ip_rules = {
-    "office" = "203.0.113.5"
-    "vpn"    = "10.0.0.0/24"
+module "mssql_server" {
+  source = "github.com/Think-Cube/terraform-azure-mssql-server?ref=v1.0.0"
+
+  name                = "sql-example-prod"
+  resource_group_name = "rg-example"
+  location            = "West Europe"
+
+  administrator_login          = "sqladmin"
+  administrator_login_password = "VeryStr0ngP@ss!"
+
+  minimum_tls_version           = "1.2"
+  public_network_access_enabled = false
+  connection_policy             = "Redirect"
+
+  identity = {
+    type = "SystemAssigned"
   }
-  mssql_server_key_vault_key_id = "/subscriptions/xxxx/resourceGroups/rg-prod/providers/Microsoft.KeyVault/vaults/my-kv/keys/mykey"
-  mssql_server_auditing_policy = {
-    storage_endpoint           = "https://mystorage.blob.core.windows.net/"
-    storage_account_access_key = "base64encodedkey=="
-    retention_in_days          = 90
-    log_analytics_workspace_id = "/subscriptions/xxxx/resourceGroups/rg-prod/providers/Microsoft.OperationalInsights/workspaces/my-law"
+
+  azuread_administrator = {
+    login_username              = "admin@example.com"
+    object_id                   = "00000000-0000-0000-0000-000000000000"
+    tenant_id                   = "11111111-1111-1111-1111-111111111111"
+    azuread_authentication_only = false
+  }
+
+  firewall_rules = {
+    "allow-office" = {
+      start_ip_address = "203.0.113.0"
+      end_ip_address   = "203.0.113.255"
+    }
+    "allow-azure-services" = {
+      start_ip_address = "0.0.0.0"
+      end_ip_address   = "0.0.0.0"
+    }
+  }
+
+  tags = {
+    environment = "prod"
+    managed_by  = "terraform"
+    cost_center = "data"
   }
 }
